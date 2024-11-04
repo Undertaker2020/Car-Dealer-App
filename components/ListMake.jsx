@@ -8,12 +8,13 @@ async function fetchData(makeId, year) {
     return result.Results;
 }
 
-export default async function ListMark({ makeId, year }) {
+export default async function ListMake({ makeId, year }) {
     const data = await fetchData(makeId, year);
 
     if (!data || data.length === 0) {
-        return <p>Sorry, but no data for the selected brand and year =(</p>;
+        return <p>Error</p>;
     }
+
 
     return (
         <div className="w-1/2 min-w-[350px]">

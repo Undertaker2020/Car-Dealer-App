@@ -1,101 +1,69 @@
-import Image from "next/image";
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import Dropdown from '@/components/Dropdown';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+const VEHICLE_API_URL = process.env.NEXT_PUBLIC_MAKES_URL;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function FilterPage() {
+    const [makes, setMakes] = useState([]);
+    const [selectedMake, setSelectedMake] = useState('');
+    const [selectedYear, setSelectedYear] = useState('');
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 2004 + 1 }, (_, i) => 2004 + i);
+
+    const fetchVehicleMakes = useCallback(async () => {
+        if (!VEHICLE_API_URL) {
+            console.error('API URL is not defined');
+            return;
+        }
+
+        try {
+            const response = await fetch(VEHICLE_API_URL);
+            const data = await response.json();
+            const formattedMakes = data.Results.map(make => ({
+                value: make.MakeId,
+                label: make.MakeName,
+            }));
+            setMakes(formattedMakes);
+        } catch (error) {
+            console.error('Error fetching vehicle makes:', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchVehicleMakes();
+    }, [fetchVehicleMakes]);
+
+    return (
+        <div className="flex flex-col w-full h-screen items-center justify-center bg-gradient-to-br from-purple-500 to-blue-700">
+            <div className="w-9/12 md:w-6/12 h-2/4 bg-gradient-to-r from-white via-blue-50 to-purple-100 rounded-lg flex flex-col drop-shadow-2xl items-center justify-center p-6">
+                <h1 className="mb-6 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-purple-600 tracking-wider">
+                    Choose Your Vehicle
+                </h1>
+                <div className="w-full max-w-xl space-y-4">
+                    <Dropdown
+                        label="Vehicle Make:"
+                        options={makes}
+                        onChange={e => setSelectedMake(e.target.value)}
+                        placeholder="Select a make"
+                    />
+                    <Dropdown
+                        label="Model Year:"
+                        options={years.map(year => ({ value: year, label: year }))}
+                        onChange={e => setSelectedYear(e.target.value)}
+                        placeholder="Select a year"
+                    />
+                    <Link href={`/result/${selectedMake}/${selectedYear}`} passHref>
+                        <button
+                            disabled={!selectedMake || !selectedYear}
+                            className="mt-6 w-full rounded-md bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:from-purple-600 hover:to-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            Show me Cars
+                        </button>
+                    </Link>
+                </div>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }

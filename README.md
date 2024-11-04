@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Car Dealer App
 
-First, run the development server:
+## Overview
+**Car Dealer App** is a Next.js web application that enables users to search for cars by make and model year. The application integrates dynamic routing and custom components to enhance the user experience, using Tailwind CSS for styling.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. **Home Page** (app/page.js)
+- **Search by Make and Model Year**: Users can select a car make and model year through dropdown menus. Make data is fetched from an external API (specified in the `NEXT_PUBLIC_MAKES_URL` environment variable).
+- **Dropdown Component**: Dynamically displays the list of available makes and years.
+- **Search Button**: Once a make and year are selected, the "Show me Cars" button activates, redirecting users to the results page based on the chosen filters.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 2. **Results Page** (app/result/[makeId]/[year]/page.js)
+- **Dynamic Routing**: Uses the `/result/[makeId]/[year]` route, generated based on the user's selected make and model year.
+- **ListMake Component**: Loads and displays car models based on the selected `makeId` and `year` parameters.
+- **Loading Animation**: Displays "Loading..." text while data is being fetched.
+- **Back Button**: Allows users to return to the home page for a new search.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. **Layout and Metadata** (app/layout.js)
+- **Global Styles**: Includes `globals.css` for consistent styling across the app.
+- **Page Metadata**: Sets the app's title and description for SEO.
 
-## Learn More
+### 4. **Scripts and Configuration** (package.json)
+- The app includes standard scripts for development and production:
+    - `npm run dev`: Starts the development server.
+    - `npm run build`: Compiles the app for production.
+    - `npm start`: Starts the compiled production app.
 
-To learn more about Next.js, take a look at the following resources:
+- **Dependencies**:
+    - **React** and **Next.js** for dynamic components and routing.
+    - **Tailwind CSS** for styling.
+    - **Prettier** and **ESLint** for maintaining code styling rules.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Undertaker2020/Car-Dealer-App.git
+   cd car-dealer-app
+   ```
 
-## Deploy on Vercel
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Set up environment variables**
+    - Create a `.env.local` file and add the API URL to fetch car makes:
+      ```
+      NEXT_PUBLIC_MAKES_URL=<Your API URL>
+      ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Build for production**
+   ```bash
+   npm run build
+   npm start
+   ```
+
+## Technologies Used
+- **Next.js**: Framework for server-rendered applications and routing.
+- **React**: Library for building user interfaces.
+- **Tailwind CSS**: Utility-first CSS framework for quick styling.
+
